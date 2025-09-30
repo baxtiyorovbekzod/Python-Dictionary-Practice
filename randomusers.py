@@ -11,7 +11,14 @@ def get_full_names(data: dict) -> list[str]:
     Returns:
         list[str]: List of full names.
     """
-    pass
+    names=[]
+    for user in data['results']:
+        name=user['name']
+        fullname=f"{name['first']} {name['last']}"
+        names.append(fullname)
+
+    return names    
+    
 
 
 def get_users_by_country(data: dict, country: str) -> list[dict]:
@@ -25,10 +32,19 @@ def get_users_by_country(data: dict, country: str) -> list[dict]:
     Returns:
         list[dict]: List of dictionaries containing full name and email of matching users.
     """
-    pass
+    countryes={}
+    for user in data['results']:
+        c = user['location']['country']
+        if c not in countryes:
+            pass
+
+            
+
+     
 
 
-def count_users_by_gender(data: dict) -> dict:
+
+def  count_users_by_gender(data: dict) -> dict:
     """
     Counts the number of users by gender.
 
@@ -163,4 +179,5 @@ def get_registered_before_year(data: dict, year: int) -> list[dict]:
     pass
 
 
-get_full_names(randomuser_data)
+r= get_users_by_country(randomuser_data)
+print(r)

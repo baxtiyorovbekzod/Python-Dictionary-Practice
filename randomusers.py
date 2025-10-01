@@ -19,7 +19,8 @@ def get_full_names(data: dict) -> list[str]:
         names.append(fullname)
 
     return names    
-    
+
+result= get_full_names(randomuser_data)   
 
 
 def get_users_by_country(data: dict, country: str) -> list[dict]:
@@ -68,6 +69,8 @@ def  count_users_by_gender(data: dict) -> dict:
             result['female'] += 1
     
     return result
+
+result2=count_users_by_gender(randomuser_data)
 
 
 

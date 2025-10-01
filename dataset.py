@@ -21,7 +21,7 @@ randomuser_data = {
                 "longitude": "-169.1103"
             },
             "timezone": {
-                "offset": "+3:30",
+                "timezone": "+3:30",
                 "description": "Tehran"
             }
         },

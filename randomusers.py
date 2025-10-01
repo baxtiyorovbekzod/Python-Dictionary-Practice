@@ -44,6 +44,9 @@ def get_users_by_country(data: dict, country: str) -> list[dict]:
 
     return countryes
 
+x=get_users_by_country(randomuser_data, "Netherlands")
+
+
        
 
 def  count_users_by_gender(data: dict) -> dict:
@@ -83,7 +86,10 @@ def get_emails_of_older_than(data: dict, age: int) -> list[str]:
     for user in data['results']:
         if user['dob']['age'] > age:   
             emails.append(user['email'])
+    
     return emails
+
+q=get_emails_of_older_than(randomuser_data , 60)
 
 
 def sort_users_by_age(data: dict, descending: bool = False) -> list[dict]:
@@ -111,7 +117,17 @@ def get_usernames_starting_with(data: dict, letter: str) -> list[str]:
     Returns:
         list[str]: List of matching usernames.
     """
-    pass
+    usernames = []
+    for user in data['results']:
+        if user['login']['username'].startswith(letter):
+            usernames.append({
+            'username': user['login']['username']
+        })
+
+    return usernames
+
+r=get_usernames_starting_with(randomuser_data, "g")  
+ 
 
 
 def get_average_age(data: dict) -> float:
@@ -124,7 +140,17 @@ def get_average_age(data: dict) -> float:
     Returns:
         float: Average age.
     """
-    pass
+    averages=[]
+    for user in data['results']:
+        if 'dob' in user and 'age' in user['dob']:
+            averages.append(user['dob']['age'])
+
+    if len(averages) == 0:
+        return 0.0  
+    
+    return sum(averages) / len(averages)
+g=get_average_age(randomuser_data) 
+  
 
 
 def group_users_by_nationality(data: dict) -> dict:
@@ -137,9 +163,19 @@ def group_users_by_nationality(data: dict) -> dict:
     Returns:
         dict: Dictionary with nationality as keys and count as values.
     """
-    pass
+    results={}
+    for user in data['results']:
+        nat=user['nat']
+        if nat in results:
+            results[nat] += 1
+        else:
+            results[nat] = 1 
 
+    return results
 
+result8=group_users_by_nationality(randomuser_data)             
+
+            
 def get_all_coordinates(data: dict) -> list[tuple[str, str]]:
     """
     Extracts all users' coordinates as tuples of (latitude, longitude).
@@ -150,7 +186,18 @@ def get_all_coordinates(data: dict) -> list[tuple[str, str]]:
     Returns:
         list[tuple[str, str]]: List of coordinate tuples.
     """
-    pass
+    coordinates=[]
+    for user in data['results']:
+        car=user['location']['coordinates']
+        lat = car['latitude']
+        lon = car['longitude']
+        coordinates.append((lat, lon))
+        
+
+    return coordinates
+
+result9=get_all_coordinates(randomuser_data)
+      
 
 
 def get_oldest_user(data: dict) -> dict:
@@ -163,7 +210,23 @@ def get_oldest_user(data: dict) -> dict:
     Returns:
         dict: Dictionary containing 'name', 'age', and 'email' of the oldest user.
     """
-    pass
+    oldest_user = None
+    mx = 0
+    for user in data['results']:
+        age = user['dob']['age']
+        if age > mx:
+            mx = age
+            oldest_user = {
+                "name": f"{user['name']['first']} {user['name']['last']}",
+                "age": age,
+                "email": user['email']
+            }
+    return oldest_user
+
+
+
+result10=get_oldest_user(randomuser_data) 
+  
 
 
 def find_users_in_timezone(data: dict, offset: str) -> list[dict]:
@@ -177,7 +240,20 @@ def find_users_in_timezone(data: dict, offset: str) -> list[dict]:
     Returns:
         list[dict]: List of users with full name and city.
     """
-    pass
+    timezone=[]
+    for user in data['results']:
+        time = user['location']['timezone']['offset']
+        if time == offset:
+            timezone.append({
+                "name": f"{user['name']['first']} {user['name']['last']}",
+                "city": user['location']['city']
+            })
+
+    return timezone
+
+result11=find_users_in_timezone(randomuser_data, '+5:30')
+print(result11)        
+    
 
 
 def get_registered_before_year(data: dict, year: int) -> list[dict]:

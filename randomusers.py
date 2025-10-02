@@ -11,14 +11,10 @@ def get_full_names(data: dict) -> list[str]:
     Returns:
         list[str]: List of full names.
     """
-    names=[]
-    for user in data['results']:
 
-        name=user['name']
-        fullname=f"{name['first']} {name['last']}"
-        names.append(fullname)
-
-    return names    
+    return list(
+        map(lambda user: f"{user['name']['first']} {user['name']['last']}",
+            data['results']))
 
 result= get_full_names(randomuser_data)   
 
@@ -34,17 +30,16 @@ def get_users_by_country(data: dict, country: str) -> list[dict]:
     Returns:
         list[dict]: List of dictionaries containing full name and email of matching users.
     """
-    countryes=[]
-    for user in data['results']:
-        if  user['location']['country']==country:
-            countryes.append({
-                "name":f"{user['name']['first']} {user['name']['last']}",
-                "email":user["email"],
-                "country":user["location"]["country"]
-            })
-
-    return countryes
-
+    return list(
+        map(
+            lambda user: {
+                "name": f"{user['name']['first']} {user['name']['last']}",
+                "email": user["email"],
+                "country": user["location"]["country"]
+            },
+            filter(lambda user: user['location']['country'] == country, data['results'])
+        )
+    )
 x=get_users_by_country(randomuser_data, "Netherlands")
 
 
@@ -60,15 +55,10 @@ def  count_users_by_gender(data: dict) -> dict:
     Returns:
         dict: Dictionary with gender as keys and count as values.
     """
-    result = {'male': 0, 'female': 0}
+    males = len(list(filter(lambda user:user['gender'] == 'male', data['results'])))
+    females = len(list(filter(lambda user: user['gender'] == 'female', data['results'])))
     
-    for user in data['results']:
-        if user['gender'] == "male":
-            result ['male'] += 1
-        elif user['gender'] == 'female':
-            result['female'] += 1
-    
-    return result
+    return {'male':males, 'female':females}
 
 result2=count_users_by_gender(randomuser_data)
 
@@ -85,12 +75,11 @@ def get_emails_of_older_than(data: dict, age: int) -> list[str]:
     Returns:
         list[str]: List of email addresses.
     """
-    emails = []
-    for user in data['results']:
-        if user['dob']['age'] > age:   
-            emails.append(user['email'])
-    
-    return emails
+    return list(
+        map(
+            lambda user: user['email'],
+            filter(lambda user: user['dob']['age'] > age, data['results'])
+        ))
 
 q=get_emails_of_older_than(randomuser_data , 60)
 
@@ -106,7 +95,21 @@ def sort_users_by_age(data: dict, descending: bool = False) -> list[dict]:
     Returns:
         list[dict]: List of users with name and age sorted accordingly.
     """
-    pass
+    sorted_users = sorted(
+        data['results'],
+        key=lambda user: user['dob']['age'],
+        reverse=descending
+    )
+    
+    return [
+        {
+            "name": f"{user['name']['first']} {user['name']['last']}",
+            "age": user['dob']['age']
+        }
+        for user in sorted_users
+    ]
+result5=sort_users_by_age(randomuser_data)
+
 
 
 def get_usernames_starting_with(data: dict, letter: str) -> list[str]:
@@ -120,17 +123,13 @@ def get_usernames_starting_with(data: dict, letter: str) -> list[str]:
     Returns:
         list[str]: List of matching usernames.
     """
-    usernames = []
-    for user in data['results']:
-        if user['login']['username'].startswith(letter):
-            usernames.append({
-            'username': user['login']['username']
-        })
+    
 
-    return usernames
+    return list(map(lambda user: user['login']['username'],
+            filter(lambda user:user['login']['username'].startswith(letter), data['results'])))
 
 r=get_usernames_starting_with(randomuser_data, "g")  
- 
+print(r)
 
 
 def get_average_age(data: dict) -> float:
@@ -254,8 +253,8 @@ def find_users_in_timezone(data: dict, offset: str) -> list[dict]:
 
     return timezone
 
-result11=find_users_in_timezone(randomuser_data, '+5:30')
-print(result11)        
+#result11=find_users_in_timezone(randomuser_data, '+5:30')
+       
     
 
 
